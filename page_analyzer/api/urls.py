@@ -1,8 +1,9 @@
 from datetime import date
+
+import httpx
 from bs4 import BeautifulSoup
 from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
-import httpx
 
 from page_analyzer.modules import (
     flash,
@@ -10,9 +11,9 @@ from page_analyzer.modules import (
     normalized_urls,
     not_correct_url,
 )
-from page_analyzer.repositories.url_reposetory import (
-    UrlCheckReposetory,
-    UrlReposetory,
+from page_analyzer.repositories.url_repository import (
+    UrlCheckRepository,
+    UrlRepository,
 )
 
 
@@ -31,9 +32,9 @@ class UrlsRouter:
         )
 
     async def urls_list(self, request: Request):
-        repo = UrlReposetory()
+        repo = UrlRepository()
         urls = repo.get_content(reversed=True)
-        check_repo = UrlCheckReposetory()
+        check_repo = UrlCheckRepository()
         for url in urls:
             check_url = check_repo.get_content(url.id, reversed=True)
             if check_url:
@@ -59,7 +60,7 @@ class UrlsRouter:
                 "index.html",
                 {"request": request, "messages": messages, "url": url},
             )
-        repo = UrlReposetory()
+        repo = UrlRepository()
         norm_url = {"name": normalized_urls(url), "created_at": date.today()}
         url_in_repo = repo.get_by_name(norm_url["name"])
         if url_in_repo:
@@ -76,8 +77,8 @@ class UrlsRouter:
         )
 
     async def urls_show(self, id: int, request: Request):
-        repo = UrlReposetory()
-        check_repo = UrlCheckReposetory()
+        repo = UrlRepository()
+        check_repo = UrlCheckRepository()
         url = repo.find(id)
         checks_url = check_repo.get_content(id=id, reversed=True)
         print(checks_url)
@@ -93,7 +94,7 @@ class UrlsRouter:
         )
 
     async def urls_check(self, id: int, request: Request):
-        repo = UrlReposetory()
+        repo = UrlRepository()
         url = repo.find(id)
         error = False
         try:
@@ -114,7 +115,7 @@ class UrlsRouter:
             extracted_title = soup.title.string if soup.title else ""
             meta_tag = soup.find("meta", attrs={"name": "description"})
             extracted_description = meta_tag["content"] if meta_tag else ""
-            check_repo = UrlCheckReposetory()
+            check_repo = UrlCheckRepository()
             data = {
                 "url_id": id,
                 "status_code": req.status_code,

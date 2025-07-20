@@ -4,9 +4,8 @@ from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from page_analyzer.api.urls import UrlsRouter
-from page_analyzer.modules import get_flashed_messages
 from page_analyzer.config import settings
-
+from page_analyzer.modules import get_flashed_messages
 
 app = FastAPI(
     middleware=[

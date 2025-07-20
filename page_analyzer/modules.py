@@ -1,9 +1,8 @@
 import typing
-from fastapi import Request
-
 from urllib.parse import urlparse
 
 import validators
+from fastapi import Request
 
 
 def flash(request: Request, message: typing.Any, category: str = "") -> None:

@@ -1,9 +1,10 @@
 from sqlalchemy import text
+
 from page_analyzer.models.database import session_factory
 from page_analyzer.models.models import Url, UrlCheck
 
 
-class UrlReposetory:
+class UrlRepository:
     def __init__(self):
         self.conn = session_factory()
 
@@ -53,7 +54,7 @@ class UrlReposetory:
             return url if url else None
 
 
-class UrlCheckReposetory:
+class UrlCheckRepository:
     def __init__(self):
         self.conn = session_factory()
 
