@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block main %}
+{% if messages %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }}" role="alert">
+        {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+<main>
+  <div class="container-md">
+    <div class="row justify-content-md-center mt-3">
+      <div class="col-8 bg-light border rounded-3 p-5">
+        <h1 class="display-3">Анализатор страниц</h1>
+        <p class="lead">Бесплатно проверяйте сайты на SEO-пригодность</p>
+        <form class="justify-content-center d-flex" action="{{ url_for('urls_post') }}" method="post">
+          <label for="text" class="visually-hidden">Url для проверки</label>
+          <input name="url" type="text" class="form-control form-control-lg" placeholder="https://www.example.com" value="{{ urls }}">
+          <input type="submit" class="btn btn-lg btn-primary px-5 mx-3 text-uppercase" value="Проверить">
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

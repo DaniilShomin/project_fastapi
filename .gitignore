@@ -1,0 +1,7 @@
+__pycache__/
+.venv/
+*.cast
+.vscode
+*.pyc
+.python_version
+.env
