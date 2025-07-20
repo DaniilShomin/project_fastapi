@@ -10,7 +10,7 @@ lint:
 build:
 	chmod +x ./build.sh
 	./build.sh
-	
+
 PORT ?= 8000
 render-start:
-	gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
+	uvicorn page_analyzer:app --host 0.0.0.0 --port $(PORT)
