@@ -22,6 +22,9 @@ templates = Jinja2Templates(
     directory=settings.TEMPLATES_DIR,
     auto_reload=settings.AUTO_RELOAD_TEMPLATES,
 )
+templates.env.filters["datetime_format"] = (
+    lambda value, format="%d.%m.%Y": value.strftime(format)
+)
 templates.env.globals["get_flashed_messages"] = get_flashed_messages
 
 

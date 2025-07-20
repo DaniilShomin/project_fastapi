@@ -43,6 +43,7 @@ class UrlsRouter:
             else:
                 url.last_check = ""
                 url.status_code = ""
+            print(type(url.last_check))
         messages = get_flashed_messages(request)
         return self.templates.TemplateResponse(
             "urls/index.html",
@@ -71,7 +72,6 @@ class UrlsRouter:
         else:
             saved_url = repo.save(norm_url)
             flash(request, "Страница успешно добавлена", "success")
-            print(saved_url)
         return RedirectResponse(
             url=request.url_for("urls_show", id=saved_url.id), status_code=303
         )
