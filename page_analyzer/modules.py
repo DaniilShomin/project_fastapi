@@ -1,5 +1,5 @@
 import typing
-from types import Optional
+from typing import Optional
 from urllib.parse import urlparse
 
 import validators
