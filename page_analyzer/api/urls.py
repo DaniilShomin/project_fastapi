@@ -21,10 +21,11 @@ class UrlsRouter:
         self._setup_routes()
 
     def _setup_routes(self):
-        self.router.add_api_route("/", self.urls_get, methods=["GET"])
+        self.router.add_api_route("/", self.urls_list, methods=["GET"])
         self.router.add_api_route("/", self.urls_post, methods=["POST"])
+        self.router.add_api_route("/{id}/", self.urls_show, methods=["GET"])
 
-    async def urls_get(self, request: Request):
+    async def urls_list(self, request: Request):
         repo = UrlReposetory()
         urls = repo.get_content(reversed=True)
         check_repo = UrlCheckReposetory()
@@ -58,8 +59,28 @@ class UrlsRouter:
         url_in_repo = repo.get_by_name(norm_url["name"])
         if url_in_repo:
             flash(request, "Страница уже существует", "info")
-            return RedirectResponse(url="/", status_code=303)
+            return RedirectResponse(
+                url=request.url_for("index"), status_code=303
+            )
         else:
-            repo.save(norm_url)
+            saved_url = repo.save(norm_url)
             flash(request, "Страница успешно добавлена", "success")
-        return RedirectResponse(url="/", status_code=303)
+        return RedirectResponse(
+            url=request.url_for("url_show", saved_url["id"]), status_code=303
+        )
+
+    async def urls_show(self, id: int, request: Request):
+        repo = UrlReposetory()
+        check_repo = UrlCheckReposetory()
+        url = repo.find(id)
+        checks_url = check_repo.get_content(id, reversed=True)
+        messages = get_flashed_messages(request)
+        return self.templates.TemplateResponse(
+            "urls/show.html",
+            {
+                "request": request,
+                "messages": messages,
+                "url": url,
+                "checks_url": checks_url,
+            },
+        )

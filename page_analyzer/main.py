@@ -28,10 +28,12 @@ templates.env.globals["get_flashed_messages"] = get_flashed_messages
 
 @app.get("/")
 async def index(request: Request):
+    message = get_flashed_messages(request)
     return templates.TemplateResponse(
         "index.html",
         {
             "request": request,
+            "messages": message,
         },
     )
 

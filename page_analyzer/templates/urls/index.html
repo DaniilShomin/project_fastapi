@@ -1,12 +1,5 @@
 {% extends "layout.html" %}
 {% block main %}
-{% if messages %}
-  {% for category, message in messages %}
-    <div class="alert alert-{{ category }}" role="alert">
-        {{ message }}
-    </div>
-  {% endfor %}
-{% endif %}
 <main>
   <div class="container-md mt-3">
     <h1>Сайты</h1>
@@ -23,7 +16,7 @@
         {% for url in urls %}
         <tr>
             <td>{{ url.id }}</td>
-            <td><a href="#">{{ url.name }}</a></td>
+            <td><a href="{{ url_for('urls_show', id=url.id) }}">{{ url.name }}</a></td>
             <td>{{ url.last_check }}</td>
             <td>{{ url.status_code }}</td>
         </tr>

@@ -14,13 +14,18 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('urls_get') }}">Сайты</a>
+                <a class="nav-link" href="{{ url_for('urls_list') }}">Сайты</a>
               </li>
             </ul>
           </div>
         </div>
       </nav>
     </header>
+    {% if messages %}
+      <div class="alert alert-{{ messages.category }}" role="alert">
+          {{ messages.message }}
+      </div>
+    {% endif %}
     {% block main %}
     {% endblock %}    
   </body>

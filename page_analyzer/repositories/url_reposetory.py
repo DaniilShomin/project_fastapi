@@ -44,6 +44,7 @@ class UrlReposetory:
             )
             session.add(url)
             session.commit()
+            return url
 
     def get_by_name(self, name):
         with self.conn as session:
