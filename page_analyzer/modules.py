@@ -16,7 +16,7 @@ def flash(request: Request, message: typing.Any, category: str = "") -> None:
 
 def get_flashed_messages(request: Request):
     return (
-        request.session.pop("_messages")[0]
+        request.session.pop("_messages")
         if "_messages" in request.session
         else []
     )

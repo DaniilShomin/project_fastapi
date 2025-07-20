@@ -22,9 +22,11 @@
       </nav>
     </header>
     {% if messages %}
-      <div class="alert alert-{{ messages.category }}" role="alert">
-          {{ messages.message }}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.category }}" role="alert">
+          {{ message.message }}
       </div>
+      {% endfor %}
     {% endif %}
     {% block main %}
     {% endblock %}    

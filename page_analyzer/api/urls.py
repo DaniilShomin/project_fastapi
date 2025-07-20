@@ -1,6 +1,8 @@
 from datetime import date
+from bs4 import BeautifulSoup
 from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
+import httpx
 
 from page_analyzer.modules import (
     flash,
@@ -24,6 +26,9 @@ class UrlsRouter:
         self.router.add_api_route("/", self.urls_list, methods=["GET"])
         self.router.add_api_route("/", self.urls_post, methods=["POST"])
         self.router.add_api_route("/{id}/", self.urls_show, methods=["GET"])
+        self.router.add_api_route(
+            "/{id}/check", self.urls_check, methods=["POST"]
+        )
 
     async def urls_list(self, request: Request):
         repo = UrlReposetory()
@@ -32,8 +37,8 @@ class UrlsRouter:
         for url in urls:
             check_url = check_repo.get_content(url.id, reversed=True)
             if check_url:
-                url["last_check"] = check_url[0]["created_at"]
-                url["status_code"] = check_url[0]["status_code"]
+                url.last_check = check_url[0].created_at
+                url.status_code = check_url[0].status_code
             else:
                 url.last_check = ""
                 url.status_code = ""
@@ -65,15 +70,17 @@ class UrlsRouter:
         else:
             saved_url = repo.save(norm_url)
             flash(request, "Страница успешно добавлена", "success")
+            print(saved_url)
         return RedirectResponse(
-            url=request.url_for("url_show", saved_url["id"]), status_code=303
+            url=request.url_for("urls_show", id=saved_url.id), status_code=303
         )
 
     async def urls_show(self, id: int, request: Request):
         repo = UrlReposetory()
         check_repo = UrlCheckReposetory()
         url = repo.find(id)
-        checks_url = check_repo.get_content(id, reversed=True)
+        checks_url = check_repo.get_content(id=id, reversed=True)
+        print(checks_url)
         messages = get_flashed_messages(request)
         return self.templates.TemplateResponse(
             "urls/show.html",
@@ -83,4 +90,41 @@ class UrlsRouter:
                 "url": url,
                 "checks_url": checks_url,
             },
+        )
+
+    async def urls_check(self, id: int, request: Request):
+        repo = UrlReposetory()
+        url = repo.find(id)
+        error = False
+        try:
+            async with httpx.AsyncClient() as client:
+                auth = httpx.BasicAuth("user", "pass")
+                req = await client.get(
+                    url.name,
+                    timeout=httpx.Timeout(2.0),
+                    auth=auth,
+                    follow_redirects=True,
+                )
+        except Exception:
+            error = True
+            flash(request, "Произошла ошибка при проверке", "danger")
+        if not error:
+            soup = BeautifulSoup(req.text, "html.parser")
+            extracted_h1 = soup.h1.string if soup.h1 else ""
+            extracted_title = soup.title.string if soup.title else ""
+            meta_tag = soup.find("meta", attrs={"name": "description"})
+            extracted_description = meta_tag["content"] if meta_tag else ""
+            check_repo = UrlCheckReposetory()
+            data = {
+                "url_id": id,
+                "status_code": req.status_code,
+                "h1": extracted_h1,
+                "title": extracted_title,
+                "description": extracted_description,
+                "created_at": date.today(),
+            }
+            check_repo.get_add(data)
+            flash(request, "Страница успешно проверена", "success")
+        return RedirectResponse(
+            url=request.url_for("urls_show", id=id), status_code=303
         )

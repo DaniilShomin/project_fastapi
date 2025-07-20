@@ -22,9 +22,9 @@ class UrlReposetory:
 
     def save(self, url):
         if "id" in url and url["id"]:
-            self._update(url)
+            return self._update(url)
         else:
-            self._create(url)
+            return self._create(url)
 
     def _update(self, url):
         with self.conn as session:
@@ -36,15 +36,16 @@ class UrlReposetory:
 
         session.add(url_update)
         session.commit()
+        return url_update
 
     def _create(self, url) -> Url:
         with self.conn as session:
             url = Url(
                 name=url["name"],
             )
-            session.add(url)
-            session.commit()
-            return url
+        session.add(url)
+        session.commit()
+        return url
 
     def get_by_name(self, name):
         with self.conn as session:
@@ -73,10 +74,10 @@ class UrlCheckReposetory:
             if reversed:
                 check_urls = (
                     session.query(UrlCheck)
-                    .filter_by(id=id)
+                    .filter_by(url_id=id)
                     .order_by(text("id DESC"))
                     .all()
                 )
             else:
-                check_urls = session.query(UrlCheck).filter_by(id=id).all()
+                check_urls = session.query(UrlCheck).filter_by(url_id=id).all()
             return check_urls

@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     SESSION_COOKIE_NAME: str = "session"
 
     # База данных
-    DB_URL: str = os.getenv("DATABASE_URL", "sqlite3:///./db.sqlite3")
+    DB_URL: str = os.getenv("DATABASE_URL", "sqlite3:///db.sqlite3")
     DB_ECHO: bool = DEBUG  # Логировать SQL-запросы в debug режиме
 
     # Шаблоны
