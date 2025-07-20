@@ -1,6 +1,6 @@
 import typing
 from urllib.parse import urlparse
-
+from types import Optional
 import validators
 from fastapi import Request
 
@@ -13,7 +13,7 @@ def flash(request: Request, message: typing.Any, category: str = "") -> None:
     )
 
 
-def get_flashed_messages(request: Request):
+def get_flashed_messages(request: Request) -> list:
     return (
         request.session.pop("_messages")
         if "_messages" in request.session
@@ -30,7 +30,7 @@ def normalized_urls(url: str) -> str:
     return result
 
 
-def not_correct_url(url: str) -> str:
+def not_correct_url(url: str) -> Optional[str]:
     if not url:
         return "URL обязателен"
     if len(url) > 255 or not validators.url(url):
