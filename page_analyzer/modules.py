@@ -1,6 +1,7 @@
 import typing
-from urllib.parse import urlparse
 from types import Optional
+from urllib.parse import urlparse
+
 import validators
 from fastapi import Request
 
