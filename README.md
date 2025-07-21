@@ -2,7 +2,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DaniilShomin_project_fastapi&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=DaniilShomin_project_fastapi)
 [![Python CI](https://github.com/DaniilShomin/project_fastapi/actions/workflows/pyci.yaml/badge.svg)](https://github.com/DaniilShomin/project_fastapi/actions/workflows/pyci.yaml)
 
-# Task manager  
+# Page analyzer 
 Example of work: https://project-fastapi-gxpe.onrender.com
 
 ## How to install  
